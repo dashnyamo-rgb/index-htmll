@@ -15,8 +15,10 @@ function load() {
   }
 }
 
-let tasks = load();
-
+let tasks =(
+    {id: 1, text: "lekts unshah", done: true},
+    {id: 2, text: "app bichih", done: false},
+);
 function save() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
@@ -53,11 +55,10 @@ function deleteTask(id) {
   render();
 }
 
-// Нэг удаа л холбоно
 form.addEventListener("submit", (e) => {
   e.preventDefault();
   const text = input.value.trim();
-  if (!text) return; // хоосон бол нэмэхгүй
+  if (!text) return;
   tasks.push({ id: Date.now(), text, done: false });
   input.value = "";
   save();

@@ -3,15 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>minii ajluud</title>
-</head> 
-<main class="app">
-<h1>Миний ажлууд</h1>
-<form id="form">
-<input id="input" placeholder="Шинэ ажил..."
-required>
-<button>Нэмэх</button>
-</form>
-<ul id="list"></ul>
-</main>
-<script src="todo.js"></script>
+  <title>Миний ажлууд</title>
+  <style>
+    body { font-family: sans-serif; background: #f4f4f8; }
+    .app { max-width: 420px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 12px; }
+    form { display: flex; gap: 8px; }
+    input { flex: 1; padding: 8px; }
+    ul { list-style: none; padding: 0; }
+    li { display: flex; justify-content: space-between; padding: 8px; border-bottom: 1px solid #eee; cursor: pointer; }
+    li.done { text-decoration: line-through; opacity: 0.5; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <h1>Миний ажлууд</h1>
+    <form id="form">
+      <input id="input" placeholder="Шинэ ажил..." required>
+      <button type="submit">Нэмэх</button>
+    </form>
+    <ul id="list"></ul>
+  </main>
+  <script src="todo.js"></script>
+</body>
+</html>
