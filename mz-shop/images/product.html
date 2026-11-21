@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="mn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>XK Shop | Бүтээгдэхүүн</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="products.js"></script>
+</head>
+
+<body class="bg-slate-950 text-white antialiased">
+
+  <div class="bg-sky-400 text-slate-950 text-center text-sm font-medium py-2">
+    <a href="#" class="hover:underline">Олон улсын дэлгүүр рүү орох →</a>
+  </div>
+
+  <header class="sticky top-0 z-50 bg-slate-950/90 backdrop-blur border-b border-slate-800">
+    <div class="max-w-6xl mx-auto flex items-center justify-between px-6 py-5">
+      <a href="index.html" class="text-xl font-bold tracking-tight">
+        XK <span class="text-sky-400">SHOP</span>
+      </a>
+      <nav class="hidden md:flex gap-8 text-sm">
+        <a href="index.html#products" class="hover:text-sky-400 transition">Lifestyle</a>
+        <a href="index.html#products" class="hover:text-sky-400 transition">Jersey</a>
+        <a href="index.html#products" class="hover:text-sky-400 transition">Shoes</a>
+      </nav>
+      <a href="cart.html" class="flex items-center gap-2 text-sm hover:text-sky-400 transition">
+        <span>🛒 Сагс</span>
+        <span id="cart-count"
+          class="bg-sky-400 text-slate-950 text-xs font-bold px-2 py-1 rounded-full min-w-6 text-center">0</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6 py-10">
+    <a href="index.html#products" class="text-sm text-slate-400 hover:text-sky-400 transition">← Буцах</a>
+
+    <div id="product" class="mt-6"></div>
+  </main>
+
+  <footer class="border-t border-slate-800 px-6 py-12 mt-10">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 text-sm text-slate-400">
+      <div>
+        <h4 class="text-white font-semibold mb-2">Хүргэлтийн нөхцөл</h4>
+        <p>24-72 цагийн дотор хүргэнэ.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-2">Холбоо барих</h4>
+        <p>Instagram: @xkshop</p>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold mb-2">Төлбөр</h4>
+        <p>Дансаар болон QPay-ээр төлнө.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const root = document.getElementById("product");
+    const id = Number(new URLSearchParams(location.search).get("id")) || 1;
+    const p = PRODUCTS.find(x => x.id === id);
+
+    if (!p) {
+      root.innerHTML = `
+        <p class="text-slate-400">Бүтээгдэхүүн олдсонгүй.</p>
+        <a href="index.html" class="inline-block mt-4 text-sky-400">Нүүр хуудас руу очих</a>`;
+    } else {
+      document.title = "XK Shop | " + p.name;
+      let size = p.sizes[0];
+      let qty = 1;
+
+      root.innerHTML = `
+        <div class="grid md:grid-cols-2 gap-10">
+          <div class="relative aspect-square overflow-hidden rounded-xl bg-slate-800 flex items-center justify-center">
+            ${p.img
+              ? `<img src="${p.img}" alt="${p.name}" class="w-full h-full object-cover">`
+              : `<span class="text-slate-600 text-sm">Зураг удахгүй</span>`}
+            ${p.badge
+              ? `<span class="absolute top-3 right-3 bg-sky-400 text-slate-900 text-xs font-semibold px-3 py-1 rounded-full">${p.badge}</span>`
+              : ""}
+          </div>
+
+          <div>
+            <p class="text-sm text-slate-400">${p.category}</p>
+            <h1 class="text-3xl font-bold mt-1">${p.name}</h1>
+            <p class="text-sky-400 text-2xl mt-3">${formatPrice(p.price)}</p>
+            <p class="text-slate-300 text-sm mt-5 leading-relaxed">${p.desc}</p>
+
+            <p class="text-sm font-semibold mt-8 mb-3">Размер</p>
+            <div id="sizes" class="flex flex-wrap gap-2"></div>
+
+            <p class="text-sm font-semibold mt-8 mb-3">Тоо ширхэг</p>
+            <div class="inline-flex items-center border border-slate-700 rounded-full">
+              <button id="minus" type="button" class="px-4 py-2 hover:text-sky-400">−</button>
+              <span id="qty" class="w-8 text-center">1</span>
+              <button id="plus" type="button" class="px-4 py-2 hover:text-sky-400">+</button>
+            </div>
+
+            <button id="add" type="button"
+              class="block w-full md:w-auto mt-8 bg-sky-400 text-slate-950 font-semibold px-10 py-3 rounded-full hover:bg-sky-300 transition">
+              Сагсанд нэмэх
+            </button>
+            <p id="msg" class="text-sm text-sky-400 mt-3 h-5"></p>
+
+            <div class="mt-6 border-t border-slate-800 pt-5 text-sm text-slate-400">
+              <p>🚚 24-72 цагийн дотор хүргэнэ.</p>
+            </div>
+          </div>
+        </div>`;
+
+      // Размер сонгох
+      const sizesEl = document.getElementById("sizes");
+      function renderSizes() {
+        sizesEl.innerHTML = "";
+        p.sizes.forEach(s => {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.textContent = s;
+          b.className = "min-w-12 px-4 py-2 rounded-full border text-sm transition " +
+            (s === size
+              ? "bg-sky-400 text-slate-950 border-sky-400"
+              : "border-slate-700 hover:border-sky-400");
+          b.onclick = () => { size = s; renderSizes(); };
+          sizesEl.appendChild(b);
+        });
+      }
+      renderSizes();
+
+      // Тоо ширхэг
+      const qtyEl = document.getElementById("qty");
+      document.getElementById("minus").onclick = () => {
+        if (qty > 1) qty--;
+        qtyEl.textContent = qty;
+      };
+      document.getElementById("plus").onclick = () => {
+        if (qty < 10) qty++;
+        qtyEl.textContent = qty;
+      };
+
+      // Сагсанд нэмэх
+      const msg = document.getElementById("msg");
+      document.getElementById("add").onclick = () => {
+        addToCart(p.id, size, qty);
+        msg.textContent = "Сагсанд нэмэгдлээ ✓";
+        setTimeout(() => (msg.textContent = ""), 2000);
+      };
+    }
+  </script>
+</body>
+
+</html>
